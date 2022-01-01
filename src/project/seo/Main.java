@@ -1,6 +1,6 @@
-package sem.fourth;
-import sem.fourth.Models.Land;
-import sem.fourth.Models.User;
+package project.seo;
+import project.seo.Models.Land;
+import project.seo.Models.User;
 
 import java.util.ArrayList;
 import java.util.Scanner;

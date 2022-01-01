@@ -1,4 +1,4 @@
-package sem.fourth.Models;
+package project.seo.Models;
 
 import java.util.ArrayList;
 
