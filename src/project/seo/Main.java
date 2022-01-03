@@ -1,4 +1,6 @@
 package project.seo;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import project.seo.Models.Land;
 import project.seo.Models.User;
 
@@ -16,7 +18,7 @@ public class Main {
         all_users = new ArrayList<>();
         available_lands = new ArrayList<>();
 
-        System.out.println("*************************** LAND BROKERAGE ***************************");
+        System.out.println("\n\n*************************** LAND BROKERAGE ***************************\n");
         System.out.print("\nEnter name : ");
         User current_user = new User(sc.nextLine());
         all_users.add(current_user);
@@ -94,8 +96,8 @@ public class Main {
     }
 
 
-    private static void add_land(User current_user){
-        int land_id;
+    private static void add_land(@NotNull User current_user){
+        int land_id=0;
         String owner_name = current_user.getName();
         long total_area;
         String location;
@@ -104,6 +106,7 @@ public class Main {
 
         System.out.print("\nEnter land id : ");
         land_id = sc.nextInt();
+
 
         // TODO : check if land with same id already exists and reply accordingly
 
@@ -122,24 +125,27 @@ public class Main {
 
     private static void buy_land(User current_user){
         /*FIXME
-        *  User should not be able to buy his own land
-        *  If a land is already bought we should not be able to buy same land*/
+        *  User should not be able to buy his own land*/
+
 
         print_all_land_details();
         System.out.print("Enter land id which you want to buy : ");
         int id = sc.nextInt();
         Land buying_land = findLand(id);
         if(buying_land!=null){
-            current_user.setBoughtLands(buying_land);
-            buying_land.setFree(false);
-            buying_land.increment_number_of_times_leased();
-            System.out.println("Land with id "+id+" bought successfully\n\n");
-        }else if(!buying_land.isFree()){
-            System.out.println("Land already bought by others\n\n");
+            if(!buying_land.isFree())
+                System.out.println("Land already bought by others\n\n");
+            else {
+                current_user.setBoughtLands(buying_land);
+                buying_land.setFree(false);
+                buying_land.increment_number_of_times_leased();
+                System.out.println("Land with id " + id + " bought successfully\n\n");
+            }
         }else
             System.out.println("Land with entered id do not exist\n\n");
     }
 
+    @Nullable
     private static Land findLand(int requested_id){
         for(Land land: available_lands){
             if(land.getLand_id()==requested_id){
@@ -149,7 +155,7 @@ public class Main {
         return null;
     }
 
-    private static void specific_user_bought_land_details(User current_user){
+    private static void specific_user_bought_land_details(@NotNull User current_user){
         if(current_user.getBoughtLands().size()==0){
             System.out.println("You have not bought any lands\n\n");
         }else
@@ -157,7 +163,7 @@ public class Main {
                 print_individual_land_details(i);
     }
 
-    private  static void print_user_specific_uploaded_land_details(User current_user){
+    private  static void print_user_specific_uploaded_land_details(@NotNull User current_user){
         if(current_user.getSoldLands().size()==0)
             System.out.println("You have not added any lands\n\n");
         else
@@ -165,6 +171,7 @@ public class Main {
                 print_individual_land_details(i);
     }
 
+    @NotNull
     private static User get_or_create_user(String name){
         for(User user : all_users)
             if(user.getName().equals(name)) {
@@ -174,6 +181,4 @@ public class Main {
         System.out.println("New user created");
         return new User(name);
     }
-
-
 }
