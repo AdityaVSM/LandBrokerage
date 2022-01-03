@@ -124,16 +124,14 @@ public class Main {
     }
 
     private static void buy_land(User current_user){
-        /*FIXME
-        *  User should not be able to buy his own land*/
-
-
         print_all_land_details();
         System.out.print("Enter land id which you want to buy : ");
         int id = sc.nextInt();
         Land buying_land = findLand(id);
         if(buying_land!=null){
-            if(!buying_land.isFree())
+            if(buying_land.getOwner_name().equals(current_user.getName())){
+                System.out.println("You cannot buy your own land\n\n");
+            }else if(!buying_land.isFree())
                 System.out.println("Land already bought by others\n\n");
             else {
                 current_user.setBoughtLands(buying_land);
