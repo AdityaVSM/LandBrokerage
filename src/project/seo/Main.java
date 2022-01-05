@@ -19,9 +19,19 @@ public class Main {
         available_lands = new ArrayList<>();
 
         System.out.println("\n\n*************************** LAND BROKERAGE ***************************\n");
-        System.out.print("\nEnter name : ");
-        User current_user = new User(sc.nextLine());
-        all_users.add(current_user);
+        System.out.print("\nEnter name(govt for government) : ");
+        String name = sc.next();
+        if(name.equalsIgnoreCase("govt")){
+            govt_authority_case();
+        }else{
+            general_user_case(name);
+        }
+    }
+
+    private static void general_user_case(String name){
+        User current_user = get_or_create_user(name);
+        if(!all_users.contains(current_user))
+            all_users.add(current_user);
 
         System.out.println("\nSelect operation (-99) to exit **");
         System.out.println("** 1 View available lands **");
@@ -70,6 +80,30 @@ public class Main {
         }
     }
 
+    private static void govt_authority_case(){
+        System.out.println("Approve following land details");
+        print_all_land_details();
+        int select_id_for_approval = 0;
+        while (select_id_for_approval!=-100){
+            System.out.print("Enter ID of land which you want to approve(-100 to exit): ");
+            select_id_for_approval = sc.nextInt();
+            sc.nextLine();
+            if(select_id_for_approval==-100) {
+                System.out.print("Exited successfully\n\n Enter username to login: ");
+                general_user_case(sc.nextLine());
+            }
+            else if(available_lands.contains(findLand(select_id_for_approval))) {
+                if(findLand(select_id_for_approval).isApproved())
+                    System.out.println("Land is already approved. Choose another id");
+                else{
+                    findLand(select_id_for_approval).setApproved(true);
+                    System.out.println("Land with id " + select_id_for_approval + " approved successfully\n\n");
+                }
+            }else
+                System.out.println("Entered id do not exists in land database");
+        }
+    }
+
     private static void print_all_land_details(){
         if(available_lands.size()==0)
             System.out.println("No lands available\n\n");
@@ -90,9 +124,17 @@ public class Main {
         System.out.println("\tTotal number of times leased = "+land.getNumber_of_times_leased());
         System.out.println("\tLocation : "+land.getLocation());
         if (land.isFree())
-            System.out.println("\tSOLD = "+"NO\n\n");
+            System.out.println("\tSOLD = "+"NO");
         else
-            System.out.println("\tSOLD = "+"YES\n\n");
+            System.out.println("\tSOLD = "+"YES");
+        if(land.isApproved())
+            System.out.println("\tApproved by govt authority = "+"YES");
+        else
+            System.out.println("\tApproved by govt authority = "+"NO");
+        if(land.getLeased_by_user()!=null)
+            System.out.println("\tleased by = "+land.getLeased_by_user().getName()+"\n\n");
+        else
+            System.out.println("\tleased by = "+ "No one has leased this land yet\n\n");
     }
 
 
@@ -103,12 +145,16 @@ public class Main {
         String location;
         long price;
 
+        boolean land_exists = true;
 
-        System.out.print("\nEnter land id : ");
-        land_id = sc.nextInt();
-
-
-        // TODO : check if land with same id already exists and reply accordingly
+        while(land_exists){
+            System.out.print("\nEnter land id : ");
+            land_id = sc.nextInt();
+            if(available_lands.contains(findLand(land_id))) {
+                System.out.println("Entered land id already exists");
+            }else
+                land_exists = false;
+        }
 
         System.out.print("Enter total area : ");
         total_area = sc.nextLong();
@@ -133,9 +179,12 @@ public class Main {
                 System.out.println("You cannot buy your own land\n\n");
             }else if(!buying_land.isFree())
                 System.out.println("Land already bought by others\n\n");
+            else if(!buying_land.isApproved())
+                System.out.println("Land is not approved by government authority\n\n");
             else {
                 current_user.setBoughtLands(buying_land);
                 buying_land.setFree(false);
+                buying_land.setLeased_by_user(current_user);
                 buying_land.increment_number_of_times_leased();
                 System.out.println("Land with id " + id + " bought successfully\n\n");
             }
@@ -171,12 +220,17 @@ public class Main {
 
     @NotNull
     private static User get_or_create_user(String name){
-        for(User user : all_users)
-            if(user.getName().equals(name)) {
-                System.out.println("User already exists, Logged in as same user");
-                return user;
-            }
-        System.out.println("New user created");
-        return new User(name);
+        if(name.equalsIgnoreCase("govt")){
+            govt_authority_case();
+        }else{
+            for(User user : all_users)
+                if(user.getName().equals(name)) {
+                    System.out.println("User already exists, Logged in as same user");
+                    return user;
+                }
+            System.out.println("New user created");
+            return new User(name);
+        }
+        return null;
     }
 }

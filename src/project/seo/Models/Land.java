@@ -8,7 +8,9 @@ public class Land {
     String location;
     long price;
     int number_of_times_leased;
+    User leased_by_user;
     boolean free;
+    boolean approved;
 
     public Land(int land_id, long total_area,String owner_name, String location, long price) {
         this.land_id = land_id;
@@ -18,6 +20,17 @@ public class Land {
         this.price = price;
         this.number_of_times_leased = 0;
         free = true;
+
+        approved = false;
+        leased_by_user = null;
+    }
+
+    public boolean isApproved() {
+        return approved;
+    }
+
+    public void setApproved(boolean approved) {
+        this.approved = approved;
     }
 
     public int getLand_id() {
@@ -78,5 +91,13 @@ public class Land {
 
     public void setFree(boolean free) {
         this.free = free;
+    }
+
+    public User getLeased_by_user() {
+        return leased_by_user;
+    }
+
+    public void setLeased_by_user(User leased_by_user) {
+        this.leased_by_user = leased_by_user;
     }
 }
