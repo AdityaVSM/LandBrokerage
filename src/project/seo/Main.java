@@ -1,6 +1,4 @@
 package project.seo;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import project.seo.Models.Land;
 import project.seo.Models.User;
 
@@ -138,7 +136,7 @@ public class Main {
     }
 
 
-    private static void add_land(@NotNull User current_user){
+    private static void add_land( User current_user){
         int land_id=0;
         String owner_name = current_user.getName();
         long total_area;
@@ -192,7 +190,6 @@ public class Main {
             System.out.println("Land with entered id do not exist\n\n");
     }
 
-    @Nullable
     private static Land findLand(int requested_id){
         for(Land land: available_lands){
             if(land.getLand_id()==requested_id){
@@ -202,7 +199,7 @@ public class Main {
         return null;
     }
 
-    private static void specific_user_bought_land_details(@NotNull User current_user){
+    private static void specific_user_bought_land_details(User current_user){
         if(current_user.getBoughtLands().size()==0){
             System.out.println("You have not bought any lands\n\n");
         }else
@@ -210,7 +207,7 @@ public class Main {
                 print_individual_land_details(i);
     }
 
-    private  static void print_user_specific_uploaded_land_details(@NotNull User current_user){
+    private  static void print_user_specific_uploaded_land_details( User current_user){
         if(current_user.getSoldLands().size()==0)
             System.out.println("You have not added any lands\n\n");
         else
@@ -218,7 +215,6 @@ public class Main {
                 print_individual_land_details(i);
     }
 
-    @NotNull
     private static User get_or_create_user(String name){
         if(name.equalsIgnoreCase("govt")){
             govt_authority_case();
